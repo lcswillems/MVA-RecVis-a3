@@ -1,2 +1,4 @@
 .meta
 bird_dataset
+__pycache__
+experiments
