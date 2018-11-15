@@ -54,6 +54,3 @@ for f in tqdm(os.listdir(test_dir)):
 output_file.close()
 
 print("Succesfully wrote " + args.outfile + ', you can upload this file to the kaggle competition website')
-        
-
-

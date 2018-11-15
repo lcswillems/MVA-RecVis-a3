@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-nclasses = 20 
+nclasses = 20
 
 class Net(nn.Module):
     def __init__(self):
@@ -19,4 +19,5 @@ class Net(nn.Module):
         x = F.relu(F.max_pool2d(self.conv3(x), 2))
         x = x.view(-1, 320)
         x = F.relu(self.fc1(x))
-        return self.fc2(x)
+        x = self.fc2(x)
+        return x
