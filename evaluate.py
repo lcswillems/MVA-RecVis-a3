@@ -10,7 +10,7 @@ from model import Net
 parser = argparse.ArgumentParser(description='RecVis A3 evaluation script')
 parser.add_argument('--exp', type=str, required=True, metavar='E',
                     help='folder where experiment outputs are located.')
-parser.add_argument('--num', type=str, required=True, metavar='N',
+parser.add_argument('--num', type=int, required=True, metavar='N',
                     help='version number of the model.')
 parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
                     help="folder where data is located. test_images/ need to be found in the folder")
@@ -18,7 +18,7 @@ parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 
-model_path = os.path.join('experiments', args.exp, 'model_'+args.num+'.pth')
+model_path = 'experiments/' + args.exp + '/model_'+ str(args.num) +'.pth'
 model = Net()
 model.load_state_dict(torch.load(model_path))
 model.eval()

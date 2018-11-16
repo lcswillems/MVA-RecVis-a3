@@ -29,7 +29,7 @@ use_cuda = torch.cuda.is_available()
 torch.manual_seed(args.seed)
 
 # Create experiment folder
-exp_dir = os.path.join('experiments', args.exp)
+exp_dir = 'experiments/' + args.exp
 if not os.path.isdir(exp_dir):
     os.makedirs(exp_dir)
 
