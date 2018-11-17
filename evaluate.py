@@ -2,25 +2,26 @@ import argparse
 from tqdm import tqdm
 import os
 import PIL.Image as Image
-
 import torch
 
-from model import Net
+import utils
 
 parser = argparse.ArgumentParser(description='RecVis A3 evaluation script')
 parser.add_argument('--exp', type=str, required=True, metavar='E',
                     help='folder where experiment outputs are located.')
-parser.add_argument('--num', type=int, required=True, metavar='N',
-                    help='version number of the model.')
 parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
                     help="folder where data is located. test_images/ need to be found in the folder")
-
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 
-model_path = 'experiments/' + args.exp + '/model_'+ str(args.num) +'.pth'
-model = Net()
-model.load_state_dict(torch.load(model_path))
+# Define experiment folder
+exp_dir = 'experiments/' + args.exp
+
+# Load state
+state = utils.load_state(exp_dir)
+
+# Model
+model = utils.get_model(state)
 model.eval()
 if use_cuda:
     print('Using GPU')
@@ -39,7 +40,7 @@ def pil_loader(path):
             return img.convert('RGB')
 
 
-output_file_path = os.path.join('experiments', args.exp, 'kaggle.csv')
+output_file_path = exp_dir + '/kaggle.csv'
 output_file = open(output_file_path, "w")
 output_file.write("Id,Category\n")
 for f in tqdm(os.listdir(test_dir)):

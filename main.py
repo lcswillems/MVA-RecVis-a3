@@ -4,6 +4,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets
+import sys
+
+import utils
 
 # Training settings
 parser = argparse.ArgumentParser(description='RecVis A3 training script')
@@ -11,16 +14,16 @@ parser.add_argument('--exp', type=str, required=True, metavar='E',
                     help='folder where experiment outputs are located.')
 parser.add_argument('--num', type=int, default=None, metavar='N',
                     help='version number of the model (default: None)')
-parser.add_argument('--arch', type=str, default='Baseline', metavar='M',
-                    help='model architecture (default: Baseline)')
+parser.add_argument('--arch', type=str, default=None, metavar='M',
+                    help='model architecture (default: None)')
 parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
                     help="folder where data is located. train_images/ and val_images/ need to be found in the folder")
 parser.add_argument('--batch-size', type=int, default=64, metavar='B',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--epochs', type=int, default=50, metavar='N',
                     help='number of epochs to train (default: 50)')
-parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
-                    help='learning rate (default: 0.001)')
+parser.add_argument('--lr', type=float, default=0.0002, metavar='LR',
+                    help='learning rate (default: 0.0002)')
 parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                     help='SGD momentum (default: 0.5)')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
@@ -31,10 +34,21 @@ args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 torch.manual_seed(args.seed)
 
-# Create experiment folder
+# Define experiment folder
 exp_dir = 'experiments/' + args.exp
-if not os.path.isdir(exp_dir):
-    os.makedirs(exp_dir)
+
+# Load state
+try:
+    state = utils.load_state(exp_dir)
+except OSError:
+    state = {
+        'arch': args.arch,
+        'start_epoch': 0,
+        'best_acc': 0
+    }
+
+# Logger
+logger = utils.get_logger(exp_dir)
 
 # Data initialization and loading
 from data import train_data_transforms, val_data_transforms
@@ -48,23 +62,23 @@ val_loader = torch.utils.data.DataLoader(
                          transform=val_data_transforms),
     batch_size=args.batch_size, shuffle=False, num_workers=1)
 
-# Neural network and optimizer
-# We define neural net in model.py so that it can be reused by the evaluate.py script
-import models
-model = getattr(models, args.arch)()
-if args.num is not None:
-    model_path = exp_dir + '/model_' + str(args.num) + '.pth'
-    model.load_state_dict(torch.load(model_path))
-    epoch = args.num
-else:
-    epoch = 0
+# Log model and command
+logger.info("{}\n".format(" ".join(sys.argv)))
+logger.info("{}\n".format(args))
+
+# Model
+model = utils.get_model(state)
 if use_cuda:
-    print('Using GPU')
+    logger.info('Using GPU')
     model.cuda()
 else:
-    print('Using CPU')
+    logger.info('Using CPU')
+logger.info("{}\n".format(model))
 
+# Optimizer
 optimizer = optim.Adam(model.parameters(), lr=args.lr)
+if 'optim_dict' in state.keys():
+    optimizer.load_state_dict(state['optim_dict'])
 
 def train(epoch):
     model.train()
@@ -78,7 +92,7 @@ def train(epoch):
         loss.backward()
         optimizer.step()
         if batch_idx % args.log_interval == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+            logger.info('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.data.item()))
 
@@ -98,14 +112,23 @@ def validation():
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
 
     validation_loss /= len(val_loader.dataset)
-    print('\nValidation set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        validation_loss, correct, len(val_loader.dataset),
-        100. * correct / len(val_loader.dataset)))
+    accuracy = 100. * correct / len(val_loader.dataset)
+    logger.info('\nValidation set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        validation_loss, correct, len(val_loader.dataset), accuracy))
 
-for _ in range(args.epochs):
-    epoch += 1
+    return accuracy
+
+start_epoch = state['start_epoch']
+for epoch in range(start_epoch, start_epoch + args.epochs):
     train(epoch)
-    validation()
-    model_file = exp_dir + '/model_' + str(epoch) + '.pth'
-    torch.save(model.state_dict(), model_file)
-    print('\nSaved model to ' + model_file + '\n')
+    accuracy = validation()
+
+    is_best = accuracy > state['best_acc']
+
+    state['start_epoch'] = epoch + 1
+    state['best_acc'] = accuracy if is_best else state['best_acc']
+    state['model_state'] = model.state_dict()
+    state['optim_state'] = optimizer.state_dict()
+
+    utils.save_state(state, is_best, exp_dir)
+    logger.info('\nModel saved\n')
