@@ -31,18 +31,21 @@ class Resnet(nn.Module):
         for weights in self.base.parameters():
             weights.requires_grad = False
 
-        self.base.fc = nn.Linear(self.base.fc.in_features, nclasses)
-
-        # last_block = self.base.layer4[-1]
-        # if hasattr(last_block, 'conv3'):
-        #     last_conv = last_block.conv3
-        # elif hasattr(last_block, 'conv2'):
-        #     last_conv = last_block.conv2
-        # for weights in last_conv.parameters():
-        #     weights.requires_grad = True
+        self.base.fc = nn.Linear(self.base.fc.in_features, self.base.fc.in_features)
+        self.dp1 = nn.Dropout()
+        self.fc2 = nn.Linear(self.base.fc.in_features, self.base.fc.in_features)
+        self.dp2 = nn.Dropout()
+        self.fc3 = nn.Linear(self.base.fc.in_features, nclasses)
 
     def forward(self, x):
-        return self.base(x)
+        x = self.base(x)
+        x = F.relu(x)
+        x = self.dp1(x)
+        x = self.fc2(x)
+        x = F.relu(x)
+        x = self.dp2(x)
+        x = self.fc3(x)
+        return x
 
 class Resnet18(Resnet):
     def __init__(self):
