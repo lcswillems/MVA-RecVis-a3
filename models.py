@@ -28,14 +28,14 @@ class Resnet(nn.Module):
         super().__init__()
 
         self.base = getattr(models, base)(pretrained=True)
-        self.base.fc = nn.Linear(self.base.fc.in_features, nclasses)
-
         for weights in self.base.parameters():
             weights.requires_grad = False
 
-        last_block = self.base.layer4[-1]
-        for weights in last_block.parameters():
-            weights.requires_grad = True
+        self.base.fc = nn.Linear(self.base.fc.in_features, nclasses)
+
+        # last_block = self.base.layer4[-1]
+        # for weights in last_block.parameters():
+        #     weights.requires_grad = True
 
     def forward(self, x):
         return self.base(x)
