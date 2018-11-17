@@ -11,7 +11,6 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
 train_data_transforms = transforms.Compose([
     transforms.RandomResizedCrop(size),
     transforms.RandomHorizontalFlip(),
-    transforms.ColorJitter(.4,.4,.4),
     transforms.ToTensor(),
     normalize
 ])
