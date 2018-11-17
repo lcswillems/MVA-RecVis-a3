@@ -33,9 +33,13 @@ class Resnet(nn.Module):
 
         self.base.fc = nn.Linear(self.base.fc.in_features, nclasses)
 
-        # last_block = self.base.layer4[-1]
-        # for weights in last_block.parameters():
-        #     weights.requires_grad = True
+        last_block = self.base.layer4[-1]
+        if hasattr(last_block, 'conv3'):
+            last_conv = last_block.conv3
+        elif hasattr(last_block, 'conv2'):
+            last_conv = last_block.conv2
+        for weights in last_conv.parameters():
+            weights.requires_grad = True
 
     def forward(self, x):
         return self.base(x)
