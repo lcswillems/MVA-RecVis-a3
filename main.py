@@ -92,7 +92,7 @@ def train(epoch):
             data, target = data.cuda(), target.cuda()
         optimizer.zero_grad()
         output = model(data)
-        criterion = torch.nn.MultiLabelMarginLoss()
+        criterion = torch.nn.MultiMarginLoss()
         # criterion = torch.nn.CrossEntropyLoss()
         loss = criterion(output, target)
         loss.backward()
