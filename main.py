@@ -28,7 +28,7 @@ parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
                     help='SGD momentum (default: 0.5)')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
-parser.add_argument('--log-interval', type=int, default=10, metavar='N',
+parser.add_argument('--log-interval', type=int, default=6, metavar='N',
                     help='how many batches to wait before logging training status')
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
@@ -82,6 +82,11 @@ if 'optim_dict' in state.keys():
 
 def train(epoch):
     model.train()
+
+    ag_correct = 0
+    ag_loss = 0
+    ag_len = 0
+
     for batch_idx, (data, target) in enumerate(train_loader):
         if use_cuda:
             data, target = data.cuda(), target.cuda()
@@ -91,10 +96,20 @@ def train(epoch):
         loss = criterion(output, target)
         loss.backward()
         optimizer.step()
-        if batch_idx % args.log_interval == 0:
-            logger.info('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.data.item()))
+
+        pred = output.data.max(1, keepdim=True)[1]
+        ag_correct += pred.eq(target.data.view_as(pred)).cpu().sum()
+        ag_loss += loss.data.item()
+        ag_len += len(data)
+
+        if (batch_idx + 1) % args.log_interval == 0:
+            logger.info('Train Epoch: {} [{}/{} ({:.0f}%)]\tAverage loss: {:.6f}, Accuracy: {}/{} ({:.0f}%)'.format(
+                epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
+                100. * (batch_idx + 1) / len(train_loader),
+                ag_loss/ag_len, ag_correct, ag_len, 100. * ag_correct/ag_len))
+            ag_correct = 0
+            ag_loss = 0
+            ag_len = 0
 
 def validation():
     model.eval()
