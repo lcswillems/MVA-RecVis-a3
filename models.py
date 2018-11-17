@@ -55,3 +55,11 @@ class Resnet34(Resnet):
 class Resnet50(Resnet):
     def __init__(self):
         super().__init__("resnet50")
+
+class Resnet101(Resnet):
+    def __init__(self):
+        super().__init__("resnet101")
+
+class Resnet152(Resnet):
+    def __init__(self):
+        super().__init__("resnet152")
