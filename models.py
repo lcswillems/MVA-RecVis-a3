@@ -32,19 +32,18 @@ class Resnet(nn.Module):
             weights.requires_grad = False
 
         self.base.fc = nn.Linear(self.base.fc.in_features, self.base.fc.in_features)
-        self.dp1 = nn.Dropout()
-        self.fc2 = nn.Linear(self.base.fc.in_features, self.base.fc.in_features)
-        self.dp2 = nn.Dropout()
-        self.fc3 = nn.Linear(self.base.fc.in_features, nclasses)
+        self.top = nn.Sequential(
+            nn.ReLU(),
+            nn.Dropout(),
+            nn.Linear(self.base.fc.in_features, self.base.fc.in_features),
+            nn.ReLU(),
+            nn.Dropout(),
+            nn.Linear(self.base.fc.in_features, nclasses)
+        )
 
     def forward(self, x):
         x = self.base(x)
-        x = F.relu(x)
-        x = self.dp1(x)
-        x = self.fc2(x)
-        x = F.relu(x)
-        x = self.dp2(x)
-        x = self.fc3(x)
+        x = self.top(x)
         return x
 
 class Resnet18(Resnet):
