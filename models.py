@@ -31,9 +31,6 @@ class Resnet(nn.Module):
         for weights in self.base.parameters():
             weights.requires_grad = False
 
-        # self.base.fc = nn.Linear(self.base.fc.in_features, self.base.fc.in_features)
-        # self.fc2 = nn.Linear(self.base.fc.in_features, nclasses)
-
         self.base.fc = nn.Linear(self.base.fc.in_features, nclasses)
 
         last_block = self.base.layer4[-1]
@@ -45,8 +42,6 @@ class Resnet(nn.Module):
             weights.requires_grad = True
 
     def forward(self, x):
-        # x = self.base(x)
-        # return self.fc2(F.relu(x))
         return self.base(x)
 
 class Resnet18(Resnet):
