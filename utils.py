@@ -38,7 +38,7 @@ def get_best_chkpt_path(exp_dir):
 def load_state(exp_dir, get_best=False):
     filepath = get_best_chkpt_path(exp_dir) if get_best else get_chkpt_path(exp_dir)
 
-    return torch.load(filepath)
+    return torch.load(filepath, map_location='cpu')
 
 def get_model(state):
     model = getattr(models, state['arch'])()
