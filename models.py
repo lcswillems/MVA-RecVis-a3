@@ -46,6 +46,6 @@ class Resnet34(Based):
     def __init__(self):
         super().__init__("resnet34")
 
-class Resnet101(Based):
+class Resnet50(Based):
     def __init__(self):
-        super().__init__("resnet101")
+        super().__init__("resnet50")
