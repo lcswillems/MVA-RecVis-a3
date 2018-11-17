@@ -23,7 +23,7 @@ class Baseline(nn.Module):
         x = self.fc2(x)
         return x
 
-class Based(nn.Module):
+class Resnet(nn.Module):
     def __init__(self, base):
         super().__init__()
 
@@ -38,14 +38,14 @@ class Based(nn.Module):
     def forward(self, x):
         return self.base(x)
 
-class Resnet18(Based):
+class Resnet18(Resnet):
     def __init__(self):
         super().__init__("resnet18")
 
-class Resnet34(Based):
+class Resnet34(Resnet):
     def __init__(self):
         super().__init__("resnet34")
 
-class Resnet50(Based):
+class Resnet50(Resnet):
     def __init__(self):
         super().__init__("resnet50")
