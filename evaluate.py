@@ -18,7 +18,7 @@ use_cuda = torch.cuda.is_available()
 exp_dir = 'experiments/' + args.exp
 
 # Load state
-state = utils.load_state(exp_dir)
+state = utils.load_state(exp_dir, get_best=True)
 
 # Model
 model = utils.get_model(state)
