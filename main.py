@@ -63,7 +63,7 @@ if use_cuda:
 else:
     print('Using CPU')
 
-optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 def train(epoch):
     model.train()
