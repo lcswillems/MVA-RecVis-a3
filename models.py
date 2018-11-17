@@ -32,7 +32,13 @@ class Resnet(nn.Module):
 
         for weights in self.base.parameters():
             weights.requires_grad = False
-        for weights in self.base.layer4[-1].conv2.parameters():
+
+        last_block = self.base.layer4[-1]
+        if hasattr(last_block, 'conv3'):
+            last_conv = last_block.conv3
+        elif hasattr(last_block, 'conv2'):
+            last_conv = last_block.conv2
+        for weights in last_conv.parameters():
             weights.requires_grad = True
 
     def forward(self, x):
