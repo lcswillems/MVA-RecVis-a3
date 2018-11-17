@@ -11,6 +11,8 @@ parser.add_argument('--exp', type=str, required=True, metavar='E',
                     help='folder where experiment outputs are located.')
 parser.add_argument('--num', type=int, default=None, metavar='N',
                     help='version number of the model (default: None)')
+parser.add_argument('--model', type=str, default='Baseline', metavar='M',
+                    help='kind of model (default: Baseline)')
 parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
                     help="folder where data is located. train_images/ and val_images/ need to be found in the folder")
 parser.add_argument('--batch-size', type=int, default=64, metavar='B',
@@ -48,8 +50,8 @@ val_loader = torch.utils.data.DataLoader(
 
 # Neural network and optimizer
 # We define neural net in model.py so that it can be reused by the evaluate.py script
-from model import Net
-model = Net()
+import models
+model = getattr(models, args.model)()
 if args.num is not None:
     model_path = exp_dir + '/model_' + str(args.num) + '.pth'
     model.load_state_dict(torch.load(model_path))
