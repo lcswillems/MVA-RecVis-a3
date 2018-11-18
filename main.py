@@ -119,17 +119,14 @@ def validation():
         if use_cuda:
             data, target = data.cuda(), target.cuda()
         output = model(data)
-        # sum up batch loss
-        criterion = torch.nn.CrossEntropyLoss(reduction='elementwise_mean')
-        validation_loss += criterion(output, target).data.item()
         # get the index of the max log-probability
         pred = output.data.max(1, keepdim=True)[1]
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
 
     validation_loss /= len(val_loader.dataset)
     accuracy = 100. * correct / len(val_loader.dataset)
-    logger.info('\nValidation set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-        validation_loss, correct, len(val_loader.dataset), accuracy))
+    logger.info('\nValidation set: Accuracy: {}/{} ({:.0f}%)\n'.format(
+        correct, len(val_loader.dataset), accuracy))
 
     return accuracy
 

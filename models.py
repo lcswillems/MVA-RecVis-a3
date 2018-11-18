@@ -28,13 +28,35 @@ class Resnet(nn.Module):
         super().__init__()
 
         self.base = getattr(models, base)(pretrained=True)
+
+        in_features = self.base.fc.in_features
+
+        self.base = nn.Sequential(*list(self.base.children())[:-1])
+
         for weights in self.base.parameters():
             weights.requires_grad = False
 
-        self.base.fc = nn.Linear(self.base.fc.in_features, nclasses)
+        self.fc = nn.Linear(in_features, nclasses)
+        self.conv = nn.Conv2d(in_features, nclasses, 1)
+
+    def eval(self):
+        super().eval()
+
+        self.update_conv_weights()
+
+    def update_conv_weights(self):
+        self.conv.weight = nn.Parameter(self.fc.weight.view(*self.fc.weight.size(), 1, 1))
 
     def forward(self, x):
-        return self.base(x)
+        x = self.base(x)
+
+        if self.training:
+            x = x.view(x.size(0), -1)
+            return self.fc(x)
+
+        x = self.conv(x)
+        x = torch.sum(x, (2, 3))
+        return x
 
 class Resnet18(Resnet):
     def __init__(self):

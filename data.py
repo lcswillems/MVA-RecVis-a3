@@ -19,7 +19,6 @@ train_data_transforms = transforms.Compose([
 
 val_data_transforms = transforms.Compose([
     transforms.Resize((size, size)),
-    transforms.CenterCrop(crop_size),
     transforms.ToTensor(),
     normalize
 ])
