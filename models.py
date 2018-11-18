@@ -34,10 +34,10 @@ class Resnet(nn.Module):
         self.base.fc = nn.Linear(self.base.fc.in_features, self.base.fc.in_features)
         self.top = nn.Sequential(
             nn.ReLU(),
-            nn.Dropout(),
+            nn.Dropout(.7),
             nn.Linear(self.base.fc.in_features, self.base.fc.in_features),
             nn.ReLU(),
-            nn.Dropout(),
+            nn.Dropout(.7),
             nn.Linear(self.base.fc.in_features, nclasses)
         )
 
