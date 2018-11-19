@@ -117,12 +117,13 @@ def validation():
     model.eval()
     validation_loss = 0
     correct = 0
-    for data, target in val_loader:
-        if use_cuda:
-            data, target = data.cuda(), target.cuda()
-        output = model(data)
-        # get the index of the max log-probability
-        pred = output.data.max(1, keepdim=True)[1]
+    for datas, target in val_loader:
+        for i, data in enumerate(datas):
+            if use_cuda:
+                data, target = data.cuda(), target.cuda()
+            output = model(data).data
+            res = output if i == 0 else res + output
+        pred = res.max(1, keepdim=True)[1]
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
 
     validation_loss /= len(val_loader.dataset)
