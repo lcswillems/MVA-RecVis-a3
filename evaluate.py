@@ -45,12 +45,15 @@ output_file = open(output_file_path, "w")
 output_file.write("Id,Category\n")
 for f in tqdm(os.listdir(test_dir)):
     if 'jpg' in f:
-        data = val_data_transforms(pil_loader(test_dir + '/' + f))
-        data = data.view(1, data.size(0), data.size(1), data.size(2))
-        if use_cuda:
-            data = data.cuda()
-        output = model(data)
-        pred = output.data.max(1, keepdim=True)[1]
+        datas = val_data_transforms(pil_loader(test_dir + '/' + f))
+        for i, data in enumerate(datas):
+            data = data.view(1, data.size(0), data.size(1), data.size(2))
+            if use_cuda:
+                data = data.cuda()
+            with torch.no_grad():
+                output = model(data)
+            res = output if i == 0 else res + output
+        pred = res.max(1, keepdim=True)[1]
         output_file.write("%s,%d\n" % (f[:-4], pred))
 
 output_file.close()
