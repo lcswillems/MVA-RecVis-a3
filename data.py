@@ -14,22 +14,22 @@ train_data_transforms = transforms.Compose([
     transforms.RandomResizedCrop(224, scale=(0.6, 1)),
     transforms.RandomHorizontalFlip(),
     transforms.ColorJitter(.4, .4, .4),
-    numpy.array,
-    iaa.Sequential([
-        iaa.Affine(
-            rotate=(-45, 45),
-            shear=(-25, 25)
-        ),
-        iaa.PiecewiseAffine(scale=0.045)
-    ], random_order=True).augment_image,
-    numpy.array,
+    # numpy.array,
+    # iaa.Sequential([
+    #     iaa.Affine(
+    #         rotate=(-45, 45),
+    #         shear=(-25, 25)
+    #     ),
+    #     iaa.PiecewiseAffine(scale=0.045)
+    # ], random_order=True).augment_image,
+    # numpy.array,
     transforms.ToTensor(),
     normalize
 ])
 
 val_data_transforms = transforms.Compose([
     lambda img: [img],
-    transformsp.ResizeAug([224, 256, 384, 480, 640]),
+    transformsp.ResizeAug([224, 256, 384, 480]),
     transformsp.FlipAug(),
     lambda imgs: [toTensor(img) for img in imgs],
     lambda imgs: [normalize(img) for img in imgs]
