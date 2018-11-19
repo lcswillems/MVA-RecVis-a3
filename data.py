@@ -1,10 +1,10 @@
-import zipfile
 import os
 import torchvision.transforms as transforms
 import transforms as transformsp
 from imgaug import augmenters as iaa
 import numpy
 import torch
+from PIL import Image
 
 toTensor = transforms.ToTensor()
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
@@ -22,7 +22,7 @@ train_data_transforms = transforms.Compose([
         ),
         iaa.PiecewiseAffine(scale=0.045)
     ], random_order=True).augment_image,
-    numpy.array,
+    lambda img: Image.fromarray(img),
     transforms.RandomCrop(224),
     transforms.ToTensor(),
     normalize
