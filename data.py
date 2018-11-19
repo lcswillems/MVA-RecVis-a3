@@ -11,7 +11,7 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 
 train_data_transforms = transforms.Compose([
-    transforms.Resize(384),
+    transforms.Resize(256),
     transforms.RandomHorizontalFlip(),
     transforms.ColorJitter(.4, .4, .4),
     numpy.array,
@@ -27,7 +27,7 @@ train_data_transforms = transforms.Compose([
 
 val_data_transforms = transforms.Compose([
     lambda img: [img],
-    transformsp.ResizeAug([224, 256, 384, 480, 640]),
+    transformsp.ResizeAug([256]),
     transformsp.FlipAug(),
     lambda imgs: [toTensor(img) for img in imgs],
     lambda imgs: [normalize(img) for img in imgs]
