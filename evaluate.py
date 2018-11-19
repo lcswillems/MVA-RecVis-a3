@@ -53,7 +53,7 @@ for f in tqdm(os.listdir(test_dir)):
                 data = data.cuda()
             with torch.no_grad():
                 output = F.softmax(model(data), dim=1)
-            res = output if i == 0 else res + output
+            res = output if i == 0 else torch.max(res, output)
         pred = res.max(1, keepdim=True)[1]
         output_file.write("%s,%d\n" % (f[:-4], pred))
 
