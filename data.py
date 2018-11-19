@@ -11,17 +11,14 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 
 train_data_transforms = transforms.Compose([
-    transforms.Resize(480),
+    transforms.Resize(640),
     transforms.RandomHorizontalFlip(),
     transforms.ColorJitter(.4, .4, .4),
     numpy.array,
-    iaa.Sequential([
-        iaa.Affine(
-            rotate=(-45, 45),
-            shear=(-25, 25)
-        ),
-        iaa.PiecewiseAffine(scale=0.045)
-    ], random_order=True).augment_image,
+    iaa.Affine(
+        rotate=(-45, 45),
+        shear=(-25, 25)
+    ).augment_image,
     lambda img: Image.fromarray(img),
     transforms.RandomCrop(224),
     transforms.ToTensor(),
@@ -30,7 +27,7 @@ train_data_transforms = transforms.Compose([
 
 val_data_transforms = transforms.Compose([
     lambda img: [img],
-    transformsp.ResizeAug([480]),
+    transformsp.ResizeAug([224, 256, 384, 480, 640]),
     transformsp.FlipAug(),
     lambda imgs: [toTensor(img) for img in imgs],
     lambda imgs: [normalize(img) for img in imgs]
