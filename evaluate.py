@@ -10,7 +10,7 @@ import utils
 parser = argparse.ArgumentParser(description='RecVis A3 evaluation script')
 parser.add_argument('--exp', type=str, required=True, metavar='E',
                     help='folder where experiment outputs are located.')
-parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
+parser.add_argument('--data', type=str, default='bird_dataset_ex', metavar='D',
                     help="folder where data is located. test_images/ need to be found in the folder")
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()

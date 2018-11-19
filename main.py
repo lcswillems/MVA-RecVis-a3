@@ -17,7 +17,7 @@ parser.add_argument('--num', type=int, default=None, metavar='N',
                     help='version number of the model (default: None)')
 parser.add_argument('--arch', type=str, default=None, metavar='M',
                     help='model architecture (default: None)')
-parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
+parser.add_argument('--data', type=str, default='bird_dataset_ex', metavar='D',
                     help="folder where data is located. train_images/ and val_images/ need to be found in the folder")
 parser.add_argument('--batch-size', type=int, default=256, metavar='B',
                     help='input batch size for training (default: 256)')
