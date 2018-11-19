@@ -14,7 +14,6 @@ train_data_transforms = transforms.Compose([
     transforms.ColorJitter(.4, .4, .4),
     numpy.array,
     iaa.Sequential([
-        # iaa.ContrastNormalization((0.8, 1.2)),
         iaa.Affine(
             rotate=(-45, 45),
             shear=(-25, 25)
