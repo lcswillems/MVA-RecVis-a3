@@ -14,6 +14,12 @@ train_data_transforms = transforms.Compose([
     transforms.Resize(224),
     transforms.RandomHorizontalFlip(),
     transforms.ColorJitter(.4, .4, .4),
+    # numpy.array,
+    # iaa.Affine(
+    #     rotate=(-45, 45),
+    #     shear=(-25, 25)
+    # ).augment_image,
+    # lambda img: Image.fromarray(img),
     transforms.RandomCrop(224),
     transforms.ToTensor(),
     normalize
