@@ -3,6 +3,7 @@ from tqdm import tqdm
 import os
 import PIL.Image as Image
 import torch
+import torch.nn.functional as F
 
 import utils
 
@@ -51,7 +52,7 @@ for f in tqdm(os.listdir(test_dir)):
             if use_cuda:
                 data = data.cuda()
             with torch.no_grad():
-                output = model(data)
+                output = F.softmax(model(data), dim=1)
             res = output if i == 0 else res + output
         pred = res.max(1, keepdim=True)[1]
         output_file.write("%s,%d\n" % (f[:-4], pred))
