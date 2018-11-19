@@ -11,7 +11,7 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 
 train_data_transforms = transforms.Compose([
-    transforms.Resize(640),
+    transforms.Resize(384),
     transforms.RandomHorizontalFlip(),
     transforms.ColorJitter(.4, .4, .4),
     numpy.array,
