@@ -19,11 +19,9 @@ train_data_transforms = transforms.Compose([
         # iaa.Sometimes(0.5,
         #     iaa.AdditiveGaussianNoise(scale=0.10*255),
         # ),
-        # iaa.Fliplr(0.5),
-        # iaa.ContrastNormalization((0.75, 1.5)),
+        iaa.ContrastNormalization((0.8, 1.2)),
+        iaa.Fliplr(0.5),
         iaa.Affine(
-            scale={"x": (0.8, 1.2), "y": (0.8, 1.2)},
-            translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
             rotate=(-25, 25),
             shear=(-8, 8)
         )
