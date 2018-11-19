@@ -23,7 +23,7 @@ train_data_transforms = transforms.Compose([
         iaa.Fliplr(0.5),
         iaa.Affine(
             rotate=(-25, 25),
-            shear=(-8, 8)
+            shear=(-20, 20)
         )
     ], random_order=True).augment_image,
     numpy.array,
