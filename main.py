@@ -26,6 +26,8 @@ parser.add_argument('--lr', type=float, default=0.0002, metavar='LR',
                     help='learning rate (default: 0.0002)')
 parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                     help='SGD momentum (default: 0.9)')
+parser.add_argument('--wdecay', type=float, default=0.0001, metavar='M',
+                    help='SGD weight decay (default: 0.0001)')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=1, metavar='N',
@@ -76,7 +78,7 @@ else:
 logger.info("{}\n".format(model))
 
 # Optimizer
-optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.wdecay)
 if 'optim_dict' in state.keys():
     optimizer.load_state_dict(state['optim_dict'])
 
