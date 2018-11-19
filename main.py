@@ -18,18 +18,18 @@ parser.add_argument('--arch', type=str, default=None, metavar='M',
                     help='model architecture (default: None)')
 parser.add_argument('--data', type=str, default='bird_dataset', metavar='D',
                     help="folder where data is located. train_images/ and val_images/ need to be found in the folder")
-parser.add_argument('--batch-size', type=int, default=64, metavar='B',
-                    help='input batch size for training (default: 64)')
+parser.add_argument('--batch-size', type=int, default=256, metavar='B',
+                    help='input batch size for training (default: 256)')
 parser.add_argument('--epochs', type=int, default=50, metavar='N',
                     help='number of epochs to train (default: 50)')
 parser.add_argument('--lr', type=float, default=0.0002, metavar='LR',
                     help='learning rate (default: 0.0002)')
-parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
-                    help='SGD momentum (default: 0.5)')
+parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
+                    help='SGD momentum (default: 0.9)')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
-parser.add_argument('--log-interval', type=int, default=8, metavar='N',
-                    help='how many batches to wait before logging training status (default: 8)')
+parser.add_argument('--log-interval', type=int, default=1, metavar='N',
+                    help='how many batches to wait before logging training status (default: 1)')
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 torch.manual_seed(args.seed)
@@ -76,7 +76,7 @@ else:
 logger.info("{}\n".format(model))
 
 # Optimizer
-optimizer = optim.Adam(model.parameters(), lr=args.lr)
+optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 if 'optim_dict' in state.keys():
     optimizer.load_state_dict(state['optim_dict'])
 
