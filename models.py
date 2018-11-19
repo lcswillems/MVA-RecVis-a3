@@ -55,7 +55,7 @@ class Resnet(nn.Module):
             return self.fc(x)
 
         x = self.conv(x)
-        x = torch.max(x, (2, 3))
+        x = F.max_pool2d(x, kernel_size=x.size()[2:])
         return x
 
 class Resnet18(Resnet):
