@@ -121,7 +121,9 @@ def validation():
         for i, data in enumerate(datas):
             if use_cuda:
                 data, target = data.cuda(), target.cuda()
-            output = model(data).data
+            with torch.no_grad():
+                print(data.shape)
+                output = model(data)
             res = output if i == 0 else res + output
         pred = res.max(1, keepdim=True)[1]
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
