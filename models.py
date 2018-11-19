@@ -29,35 +29,19 @@ class Resnet(nn.Module):
 
         self.base = getattr(models, base)(pretrained=True)
 
-        in_features = self.base.fc.in_features
+        self.conv = nn.Conv2d(self.base.fc.in_features, nclasses, 1)
 
         self.base = nn.Sequential(*list(self.base.children())[:-1])
-
         for weights in self.base.parameters():
             weights.requires_grad = False
-
-        # self.fc = nn.Linear(in_features, nclasses)
-        self.conv = nn.Conv2d(in_features, nclasses, 1)
-
-    # def eval(self):
-    #     super().eval()
-
-    #     self.update_conv_weights()
-
-    # def update_conv_weights(self):
-    #     self.conv.weight = nn.Parameter(self.fc.weight.view(*self.fc.weight.size(), 1, 1))
 
     def forward(self, x):
         x = self.base(x)
 
-        # if self.training:
-        #     x = x.view(x.size(0), -1)
-        #     return self.fc(x)
-
         x = self.conv(x)
         x = F.max_pool2d(x, kernel_size=x.size()[2:])
-        x = x.squeeze(3).squeeze(2)
-        return x
+
+        return x.squeeze(3).squeeze(2)
 
 class Resnet18(Resnet):
     def __init__(self):
