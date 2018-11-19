@@ -29,7 +29,7 @@ train_data_transforms = transforms.Compose([
 
 val_data_transforms = transforms.Compose([
     lambda img: [img],
-    transformsp.ResizeAug([224, 256, 384, 480]),
+    transformsp.ResizeAug([480]),
     transformsp.FlipAug(),
     lambda imgs: [toTensor(img) for img in imgs],
     lambda imgs: [normalize(img) for img in imgs]
