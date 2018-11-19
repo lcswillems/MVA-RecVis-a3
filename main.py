@@ -122,7 +122,6 @@ def validation():
             if use_cuda:
                 data, target = data.cuda(), target.cuda()
             with torch.no_grad():
-                print(data.shape)
                 output = model(data)
             res = output if i == 0 else res + output
         pred = res.max(1, keepdim=True)[1]
