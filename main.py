@@ -124,7 +124,7 @@ def validation():
                 data, target = data.cuda(), target.cuda()
             with torch.no_grad():
                 output = F.softmax(model(data), dim=1)
-            res = output if i == 0 else res + output
+            res = output if i == 0 else torch.max(res, output)
         pred = res.max(1, keepdim=True)[1]
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
 
