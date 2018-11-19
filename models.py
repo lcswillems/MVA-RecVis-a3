@@ -34,7 +34,7 @@ class Resnet(nn.Module):
         self.base = nn.Sequential(*list(self.base.children())[:-1])
         for weights in self.base.parameters():
             weights.requires_grad = False
-        for weights in self.base[-2].conv2:
+        for weights in self.base[-2][-1].conv2.parameters():
             weights.requires_grad = True
 
     def forward(self, x):
