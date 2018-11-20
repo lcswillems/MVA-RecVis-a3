@@ -33,6 +33,10 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=1, metavar='N',
                     help='how many batches to wait before logging training status (default: 1)')
+parser.add_argument('--no-train-data-aug', type=bool, default=False,
+                    help='no data augmentation during training (default: False)')
+parser.add_argument('--no-val-data-aug', type=bool, default=False,
+                    help='no data augmentation during validation (default: False)')
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 torch.manual_seed(args.seed)
@@ -54,7 +58,12 @@ except OSError:
 logger = utils.get_logger(exp_dir)
 
 # Data initialization and loading
-from data import train_data_transforms, val_data_transforms
+from data import train_data_transforms, aug_train_data_transforms, val_data_transforms, aug_val_data_transforms
+
+if not args.no_train_data_aug:
+    train_data_transforms = aug_train_data_transforms
+if not args.no_val_data_aug:
+    val_data_transforms = aug_val_data_transforms
 
 train_loader = torch.utils.data.DataLoader(
     datasets.ImageFolder(args.data + '/train_images',
