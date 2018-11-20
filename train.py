@@ -33,9 +33,9 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=1, metavar='N',
                     help='how many batches to wait before logging training status (default: 1)')
-parser.add_argument('--no-train-data-aug', type=bool, default=False, action='store_true',
+parser.add_argument('--no-train-data-aug', default=False, action="store_true",
                     help='no data augmentation during training (default: False)')
-parser.add_argument('--no-val-data-aug', type=bool, default=False, action='store_true',
+parser.add_argument('--no-val-data-aug', default=False, action="store_true",
                     help='no data augmentation during validation (default: False)')
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
