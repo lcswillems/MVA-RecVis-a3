@@ -86,9 +86,12 @@ if 'optim_dict' in state.keys():
 def train(epoch):
     model.train()
 
-    ag_correct = 0
-    ag_loss = 0
-    ag_len = 0
+    full_correct = 0
+    batch_correct = 0
+    full_loss = 0
+    batch_loss = 0
+    full_len = 0
+    batch_len = 0
 
     for batch_idx, (data, target) in enumerate(train_loader):
         if use_cuda:
@@ -101,18 +104,23 @@ def train(epoch):
         optimizer.step()
 
         pred = output.data.max(1, keepdim=True)[1]
-        ag_correct += pred.eq(target.data.view_as(pred)).cpu().sum()
-        ag_loss += loss.data.item()
-        ag_len += len(data)
+        batch_correct += pred.eq(target.data.view_as(pred)).cpu().sum()
+        batch_loss += loss.data.item()
+        batch_len += len(data)
 
         if (batch_idx + 1) % args.log_interval == 0:
             logger.info('Train Epoch: {} [{}/{} ({:.0f}%)]\tAverage loss: {:.6f}, Accuracy: {}/{} ({:.0f}%)'.format(
                 epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
                 100. * (batch_idx + 1) / len(train_loader),
-                ag_loss/ag_len, ag_correct, ag_len, 100. * ag_correct/ag_len))
-            ag_correct = 0
-            ag_loss = 0
-            ag_len = 0
+                batch_loss/batch_len, batch_correct, batch_len, 100. * batch_correct/batch_len))
+            full_correct += batch_correct
+            batch_correct = 0
+            full_loss += batch_loss
+            batch_loss = 0
+            full_len += batch_len
+            batch_len = 0
+    logger.info('Epoch Average loss: {:.6f}, Accuracy: {}/{} ({:.0f}%)'.format(
+        full_loss/full_len, full_correct, full_len, 100. * full_correct/full_len))
 
 def validation():
     model.eval()
