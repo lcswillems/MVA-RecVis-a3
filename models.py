@@ -5,13 +5,14 @@ import torchvision.models as models
 
 nclasses = 20
 
-class Resnet(nn.Module):
-    def __init__(self, base):
+class TopModel(nn.Module):
+    def __init__(self, base, last_layer_name):
         super().__init__()
 
         self.base = getattr(models, base)(pretrained=True)
 
-        self.conv = nn.Conv2d(self.base.fc.in_features, nclasses, 1)
+        in_features = getattr(self.base, last_layer_name).in_features
+        self.conv = nn.Conv2d(in_features, nclasses, 1)
 
         self.base = nn.Sequential(*list(self.base.children())[:-1])
         for weights in self.base.parameters():
@@ -24,6 +25,10 @@ class Resnet(nn.Module):
         x = F.max_pool2d(x, kernel_size=x.size()[2:])
 
         return x.squeeze(3).squeeze(2)
+
+class Resnet(TopModel):
+    def __init__(self, base):
+        super().__init__(base, "fc")
 
 class Resnet18(Resnet):
     def __init__(self):
@@ -44,3 +49,11 @@ class Resnet101(Resnet):
 class Resnet152(Resnet):
     def __init__(self):
         super().__init__("resnet152")
+
+class Densenet(TopModel):
+    def __init__(self, base):
+        super().__init__(base, "classifier")
+
+class Densenet161(Densenet):
+    def __init__(self):
+        super().__init__("densenet161")
