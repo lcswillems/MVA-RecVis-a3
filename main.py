@@ -23,8 +23,8 @@ parser.add_argument('--batch-size', type=int, default=256, metavar='B',
                     help='input batch size for training (default: 256)')
 parser.add_argument('--epochs', type=int, default=50, metavar='N',
                     help='number of epochs to train (default: 50)')
-parser.add_argument('--lr', type=float, default=0.0002, metavar='LR',
-                    help='learning rate (default: 0.0002)')
+parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
+                    help='learning rate (default: 0.01)')
 parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                     help='SGD momentum (default: 0.9)')
 parser.add_argument('--wdecay', type=float, default=0.0001, metavar='M',
