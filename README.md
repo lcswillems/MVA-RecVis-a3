@@ -17,9 +17,9 @@ pip install -r requirements.txt
 
 To obtain:
 - (1): `python train.py --exp dn161-1 --arch Densenet161 --data bird_dataset --no-train-data-aug --no-val-data-aug`
-- (1)+(2): `python train.py --exp dn161-1 --arch Densenet161 --no-train-data-aug --no-val-data-aug`
-- (1)+(2)+(3): `python train.py --exp dn161-1 --arch Densenet161 --no-val-data-aug`
-- (1)+(2)+(3)+(4): `python train.py --exp dn161-1 --arch Densenet161`
+- (1)+(2): `python train.py --exp dn161-12 --arch Densenet161 --no-train-data-aug --no-val-data-aug`
+- (1)+(2)+(3): `python train.py --exp dn161-123 --arch Densenet161 --no-val-data-aug`
+- (1)+(2)+(3)+(4): `python train.py --exp dn161-1234 --arch Densenet161`
 
 #### Dataset
 
