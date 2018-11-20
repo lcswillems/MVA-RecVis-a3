@@ -79,7 +79,7 @@ else:
 logger.info("{}\n".format(model))
 
 # Optimizer
-optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.wdecay)
+optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.wdecay)
 if 'optim_dict' in state.keys():
     optimizer.load_state_dict(state['optim_dict'])
 
