@@ -13,7 +13,7 @@
 pip install -r requirements.txt
 ```
 
-#### How to obtains the results?
+#### How to obtain the results?
 
 To obtain:
 - (1): `python train.py --exp dn161-1 --arch Densenet161 --data bird_dataset --no-train-data-aug --no-val-data-aug`
